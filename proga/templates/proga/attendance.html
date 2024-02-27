@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Посещаймость</title>
+</head>
+<body>
+    <form method="POST" action="{% url 'mark_attendance' %}">
+        {% csrf_token %}
+        <label for="first_name">Имя:</label>
+        <input type="text" id="first_name" name="first_name" required><br>
+        <label for="last_name">Фамилия:</label>
+        <input type="text" id="last_name" name="last_name" required><br>
+        <input type="submit" value="Отметить сотрудника">
+    </form>
+
+    <h2>Список сотрудников:</h2>
+    <ul>
+        {% for employee in employees %}
+            <li>{{ employee.first_name }} {{ employee.last_name }} - Прибытие: {{ employee.arrival_time|date:'d.m.Y H:i'}}
+                {% if employee.departure_time %}
+                    , Убытие: {{ employee.departure_time|date:'d.m.Y H:i'}}
+                    <a href="{% url 'calculate_working_hours' employee.id %}">Часы работы</a>
+                {% else %}
+                    , <a href="{% url 'mark_departure' employee.id %}">Отметить убытие сотрудника</a>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
